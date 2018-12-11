@@ -1,4 +1,4 @@
-# SQLite CRUD, data display using RecyclerView
+# SQLite CRUD. Displaying data using RecyclerView.
 
 Simple SQLite Demo App.
 
