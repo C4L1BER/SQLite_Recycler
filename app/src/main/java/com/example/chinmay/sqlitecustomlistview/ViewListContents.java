@@ -119,7 +119,7 @@ public class ViewListContents extends AppCompatActivity
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+
                 if(isValid())
                 {
                     int temp = userId.getText().toString().length();
@@ -199,19 +199,19 @@ public class ViewListContents extends AppCompatActivity
         }
         else if (validations.isBlank(userName))
         {
-            userName.setError("Please enter your Name");
+            userName.setError("Please enter new UserName");
             userName.requestFocus();
             return false;
         }
         else if (validations.isBlank(userEmail))
         {
-            userEmail.setError("Please enter your E-mail");
+            userEmail.setError("Please enter new E-mail");
             userEmail.requestFocus();
             return false;
         }
         else if (validations.isBlank(userPhone))
         {
-            userPhone.setError("Please enter your phone number");
+            userPhone.setError("Please enter new phone number");
             userPhone.requestFocus();
             return false;
         }

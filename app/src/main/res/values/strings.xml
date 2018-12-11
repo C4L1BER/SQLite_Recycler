@@ -10,14 +10,15 @@
     <string name="rPhone">Phone: </string>
     <string name="add">Add</string>
     <string name="view">View</string>
-    <string name="idUpdate">Enter the ID to be updated</string>
-    <string name="uNameUpdate">UserName to be updated</string>
-    <string name="emailUpdate">Email to be updated</string>
-    <string name="phoneUpdate">Phone to be updated</string>
+    <string name="idUpdate">Enter the ID to be updated…</string>
+    <string name="uNameUpdate">Enter new UserName…</string>
+    <string name="emailUpdate">Enter new Email address…</string>
+    <string name="phoneUpdate">Enter new Phone number…</string>
     <string name="update">Update</string>
     <string name="delete">Delete</string>
-    <string name="idToDel">Enter an ID to delete</string>
+    <string name="idToDel">Enter an ID to delete…</string>
     <string name="ViewData">View Data</string>
     <string name="MainMenu">Main Menu</string>
     <string name="updateText">Enter data to update</string>
+    <string name="viewData">View Data</string>
 </resources>

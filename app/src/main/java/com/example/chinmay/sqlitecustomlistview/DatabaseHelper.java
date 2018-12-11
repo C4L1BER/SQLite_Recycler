@@ -119,4 +119,5 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }// Checks if there are any items in the database, if not then resets the autoincrement count to 0.
         return data;
     }
+
 }
