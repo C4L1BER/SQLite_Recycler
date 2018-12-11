@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">SQLiteRecycler</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
+    <string name="userName">UserName</string>
+    <string name="id">ID</string>
+    <string name="rId">ID: </string>
+    <string name="rUName">UserName: </string>
+    <string name="rEmail">Email: </string>
+    <string name="rPhone">Phone: </string>
+    <string name="add">Add</string>
+    <string name="view">View</string>
+    <string name="idUpdate">Enter the ID to be updated</string>
+    <string name="uNameUpdate">UserName to be updated</string>
+    <string name="emailUpdate">Email to be updated</string>
+    <string name="phoneUpdate">Phone to be updated</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="idToDel">Enter an ID to delete</string>
+    <string name="ViewData">View Data</string>
+    <string name="MainMenu">Main Menu</string>
+    <string name="updateText">Enter data to update</string>
+</resources>
