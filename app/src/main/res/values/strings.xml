@@ -20,5 +20,6 @@
     <string name="ViewData">View Data</string>
     <string name="MainMenu">Main Menu</string>
     <string name="updateText">Enter data to update</string>
+    <string name="deleteText">Enter an ID to delete</string>
     <string name="viewData">View Data</string>
 </resources>

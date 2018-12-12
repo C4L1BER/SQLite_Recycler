@@ -12,18 +12,26 @@ public class DatabaseHelper extends SQLiteOpenHelper
 {
     private static final String TAG = DatabaseHelper.class.getSimpleName();
 
+    /** Database related String variables */
     private static final String DATABASE_NAME = "users.db";
+
     private static final String TABLE_NAME = "users_data";
+
     private static final String COL1 = "ID";
+
     private static final String COL2 = "UNAME";
+
     private static final String COL3 = "EMAIL";
+
     private static final String COL4 = "PHONE";
 
+    /** Constructor for DatabaseHelper class */
     public DatabaseHelper(Context context)
     {
         super(context, DATABASE_NAME, null, 1);
     }
 
+    /** Creates the database */
     @Override
     public void onCreate(SQLiteDatabase db)
     {
@@ -33,6 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(createTable);
     }
 
+    /** Upgrades the database */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
@@ -40,16 +49,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
         onCreate(db);
     }
 
-    // Adds data to the database.
+    /** Adds data to the database. */
     public boolean addData(String uName, String eMail, String phone)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         long count = DatabaseUtils.queryNumEntries(db, TABLE_NAME);
         Log.i(TAG, "DatabaseItems "+count);
+
+        /* Checks if there are any items in the database, if not then resets the AutoIncrement count to 0. */
         if(count == 0)
         {
             db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + TABLE_NAME + "'");
-        }// Checks if there are any items in the database, if not then resets the autoincrement count to 0.
+        }
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, uName);
         contentValues.put(COL3, eMail);
@@ -67,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
-    // Gets all content from the database.
+    /** Gets all content from the database. */
     public Cursor getListContents()
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -75,9 +87,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return data;
     }
 
+    /** Returns data associated with the entered ID. */
+    public Cursor getContents(String id)
+    {
+        Cursor cursor = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "SELECT * FROM "+TABLE_NAME+" WHERE ID= "+id;
+        cursor = db.rawQuery(sql, null);
+        return cursor;
+    }
+
     public boolean updateData(String id, String uName, String eMail, String phone)
     {
-        // Checks whether there's a record for the entered ID.
+        /* Checks whether there's a record for the entered ID. */
         Cursor cursor = null;
         SQLiteDatabase db = this.getWritableDatabase();
         String sql = "SELECT "+COL1+" FROM "+TABLE_NAME+" WHERE ID= "+id;
@@ -85,7 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         cursor = db.rawQuery(sql, null);
         Log.i(TAG, "Cursor Count: "+ cursor.getCount());
 
-        // If record found then update, else return false
+        /* If record found then update, else return false */
         if(cursor.getCount()>0)
         {
             ContentValues contentValues = new ContentValues();
@@ -104,20 +126,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
-    // Deletes the data of the entered ID.
+    /** Deletes the data of the entered ID. */
     public int deleteData(String id)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         int data = db.delete(TABLE_NAME, "ID = ?", new String[]{id});
         Log.i(TAG, "Number of data deleted: "+data);
         long count = DatabaseUtils.queryNumEntries(db, TABLE_NAME);
-        Log.i(TAG, "Remaining data in the database: "+count);
+        Log.i(TAG, "Number of remaining data in the database: "+count);
+
+        /* Checks if there are any items in the database, if not then resets the autoincrement count to 0. */
         if(count == 0)
         {
             db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + TABLE_NAME + "'");
-            Log.i(TAG, "Reset AutoIncrement count!");
-        }// Checks if there are any items in the database, if not then resets the autoincrement count to 0.
+            Log.i(TAG, "AutoIncrement count has been reset!");
+        }
+
         return data;
     }
-
 }

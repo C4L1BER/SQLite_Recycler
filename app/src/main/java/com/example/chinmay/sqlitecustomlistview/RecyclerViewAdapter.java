@@ -13,14 +13,17 @@ import java.util.ArrayList;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
 {
     private Context context;
+
     private ArrayList<User> users = new ArrayList<>();
 
+    /** Constructor for RecyclerViewAdapter Class */
     public RecyclerViewAdapter(Context context, ArrayList<User> users)
     {
         this.context = context;
         this.users = users;
     }
 
+    /** RecyclerView onCreateViewHolder, defined the list_adapter_view layout */
     @NonNull
     @Override
     public RecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i)
@@ -30,6 +33,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return viewHolder;
     }
 
+    /** unBindViewHolder, data is bound to the view */
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder viewHolder, int i)
     {
@@ -56,12 +60,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
+    /** Get size of the ArrayList */
     @Override
     public int getItemCount()
     {
         return users.size();
     }
 
+    /** ViewHolder class, defined all the viewItems from the list_adapter_view layout */
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         TextView textId, textUName, textEmail, textPhone;

@@ -12,54 +12,54 @@
         android:layout_height="wrap_content"
         android:background="@color/colorNewBackground">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etName"
-        android:layout_margin="10dp"
-        android:padding="20dp"
-        android:hint="@string/userName"
-        android:inputType="textPersonName"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etName"
+            android:layout_margin="10dp"
+            android:padding="20dp"
+            android:hint="@string/userName"
+            android:inputType="textPersonName"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etEmail"
-        android:inputType="textEmailAddress"
-        android:layout_margin="10dp"
-        android:padding="20dp"
-        android:hint="@string/email"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etEmail"
+            android:inputType="textEmailAddress"
+            android:layout_margin="10dp"
+            android:padding="20dp"
+            android:hint="@string/email"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etPhone"
-        android:inputType="number"
-        android:maxLength="10"
-        android:layout_margin="10dp"
-        android:padding="20dp"
-        android:hint="@string/phone"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etPhone"
+            android:inputType="number"
+            android:maxLength="10"
+            android:layout_margin="10dp"
+            android:padding="20dp"
+            android:hint="@string/phone"/>
 
-    <Button
-        android:layout_marginTop="15dp"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="@string/add"
-        android:id="@+id/btnAdd"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="5dp"
-        android:padding="5dp"
-        style="@style/Widget.AppCompat.Button.Colored"/>
+        <Button
+            android:layout_marginTop="15dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add"
+            android:id="@+id/btnAdd"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:padding="5dp"
+            style="@style/Widget.AppCompat.Button.Colored"/>
 
-    <Button
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="@string/view"
-        android:id="@+id/btnView"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="5dp"
-        android:padding="5dp"
-        style="@style/Widget.AppCompat.Button.Colored"/>
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/view"
+            android:id="@+id/btnView"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:padding="5dp"
+            style="@style/Widget.AppCompat.Button.Colored"/>
 
     </LinearLayout>
 

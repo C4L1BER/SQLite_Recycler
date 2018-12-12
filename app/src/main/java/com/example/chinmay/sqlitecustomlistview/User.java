@@ -3,8 +3,11 @@ package com.example.chinmay.sqlitecustomlistview;
 public class User
 {
     private String uName;
+
     private String eMail;
+
     private String phone;
+
     private String id;
 
     public User(String id, String uName, String eMail, String phone)

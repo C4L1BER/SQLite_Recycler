@@ -15,10 +15,15 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
 {
     private Validations validations;
+
     EditText etName, etEmail, etPhone;
+
     Button btnAdd, btnView, btnUpdate, btnDelete;
+
     DatabaseHelper myDB;
+
     Context context = MainActivity.this;
+
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -65,6 +70,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                /* Check if the entered data is valid, if yes then add it in the database and then clear the EditTexts.*/
                 if(isValid())
                 {
                     String uName = etName.getText().toString();
@@ -77,12 +83,14 @@ public class MainActivity extends AppCompatActivity
                         etName.setText("");
                         etEmail.setText("");
                         etPhone.setText("");
+                        etName.requestFocus();
                     }
                 }
             }
         });
-    }// Add entered data to the database.
+    }
 
+    /** Inserting data into the database */
     public void AddData(String uName, String eMail, String phone)
     {
         boolean insertData = myDB.addData(uName, eMail, phone);
@@ -97,6 +105,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /** Conditions for checking if the entered data is valid */
     public  boolean isValid()
     {
         if (validations.isBlank(etName))
@@ -138,6 +147,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     } // Method for validating the data entered by user.
 
+    /** Method for "click BACK again to exit" function */
     @Override
     public void onBackPressed()
     {
