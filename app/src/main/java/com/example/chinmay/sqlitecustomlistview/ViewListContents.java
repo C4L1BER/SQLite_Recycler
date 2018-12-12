@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -44,6 +45,8 @@ public class ViewListContents extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_list_contents);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         assert getSupportActionBar() != null;
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -61,6 +64,7 @@ public class ViewListContents extends AppCompatActivity
         {
             Intent i = new Intent(ViewListContents.this, MainActivity.class);
             startActivity(i);
+            finish();
             Toast.makeText(this, "Database Empty!", Toast.LENGTH_SHORT).show();
         }
         else
@@ -119,6 +123,7 @@ public class ViewListContents extends AppCompatActivity
         dialog = new Dialog(ViewListContents.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.update_layout);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         dialog.setCancelable(true);
 
         dialog.show();
@@ -131,6 +136,8 @@ public class ViewListContents extends AppCompatActivity
         userId = dialog.findViewById(R.id.etId);
         userEmail = dialog.findViewById(R.id.etEmail);
         userPhone = dialog.findViewById(R.id.etPhone);
+
+        userId.requestFocus();
 
         /* View button click event in the dialog */
         btnView.setOnClickListener(new View.OnClickListener()
@@ -246,6 +253,7 @@ public class ViewListContents extends AppCompatActivity
         dialog = new Dialog(ViewListContents.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.delete_layout);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         dialog.setCancelable(true);
 
         dialog.show();

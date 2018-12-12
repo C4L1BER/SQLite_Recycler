@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity
             return false;
         }
         return true;
-    } // Method for validating the data entered by user.
+    }
 
     /** Method for "click BACK again to exit" function */
     @Override
