@@ -183,9 +183,12 @@ public class ViewListContents extends AppCompatActivity
                             /* Check if the entered data exists in the database */
                             if (uName.equals(userName.getText().toString())&&Email.equals(userEmail.getText().toString())&&Phone.equals(userPhone.getText().toString()))
                             {
-                                userName.setError("Same data exists!");
-                                userEmail.setError("Same data exists!");
-                                userPhone.setError("Same data exists!");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle("Alert!");
+                                builder.setMessage("You have not made any changes, cannot update.");
+                                builder.setPositiveButton("OK", null);
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
                             }
                             else
                             {
