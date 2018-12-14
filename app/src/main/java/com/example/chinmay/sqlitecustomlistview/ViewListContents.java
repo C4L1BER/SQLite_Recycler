@@ -1,17 +1,17 @@
 package com.example.chinmay.sqlitecustomlistview;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,7 +29,7 @@ public class ViewListContents extends AppCompatActivity
 
     private Dialog dialog;
 
-    private EditText userId, userName, userEmail, userPhone, delUserId;
+    private EditText userName, userEmail, userPhone;
 
     DatabaseHelper myDB;
 
@@ -55,6 +55,8 @@ public class ViewListContents extends AppCompatActivity
 
         validations = new Validations();
 
+        final Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
         userList = new ArrayList<>();
         Cursor data = myDB.getListContents();
         int numRows = data.getCount();
@@ -62,10 +64,10 @@ public class ViewListContents extends AppCompatActivity
         /* If Database is empty go back to main activity else populate the RecyclerView. */
         if(numRows == 0)
         {
+            Toast.makeText(this, "Database Empty!", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(ViewListContents.this, MainActivity.class);
             startActivity(i);
             finish();
-            Toast.makeText(this, "Database Empty!", Toast.LENGTH_SHORT).show();
         }
         else
         {
@@ -78,33 +80,30 @@ public class ViewListContents extends AppCompatActivity
                 System.out.println(userList.get(i).getuName());
                 i++;
             }
+
             RecyclerView recyclerView = findViewById(R.id.recyclerView);
             RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, userList);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        }
-    }
 
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.view_menu, menu);
-        return true;
-    }
+            recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener()
+            {
+                @Override
+                public void onClick(View view, int position)
+                {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.menuUpdate:
-                update();
-                return true;
+                }
 
-            case R.id.menuDelete:
-                delete();
-                return true;
-            default: return super.onOptionsItemSelected(item);
+                @Override
+                public void onLongClick(View view, int position)
+                {
+                    String id = userList.get(position).getId();
+                    Log.i(TAG, "RecyclerLongClick: "+id);
+                    vibe.vibrate(25);
+                    update(id);
+                }
+
+            }));
         }
     }
 
@@ -116,7 +115,7 @@ public class ViewListContents extends AppCompatActivity
     }
 
     /** Method for updateButton, the button in the OptionsMenu. */
-    private void update()
+    private void update(final String position)
     {
         validations = new Validations();
 
@@ -128,62 +127,35 @@ public class ViewListContents extends AppCompatActivity
 
         dialog.show();
 
-        final Button btnUpdate = dialog.findViewById(R.id.btnUpdate);
-        btnUpdate.setEnabled(false);
-        Button btnView = dialog.findViewById(R.id.btnView);
+        Button btnUpdate = dialog.findViewById(R.id.btnUpdate);
+        Button btnDelete = dialog.findViewById(R.id.btnDelete);
 
         userName = dialog.findViewById(R.id.etName);
-        userId = dialog.findViewById(R.id.etId);
         userEmail = dialog.findViewById(R.id.etEmail);
         userPhone = dialog.findViewById(R.id.etPhone);
 
-        userId.requestFocus();
+        /* Get data of the corresponding ID from the database . */
+        myDB = new DatabaseHelper(ViewListContents.this);
+        Cursor cursor = myDB.getContents(position);
+        Log.i(TAG, "CursorCount: "+cursor.getCount());
 
-        /* View button click event in the dialog */
-        btnView.setOnClickListener(new View.OnClickListener()
+        /* If cursor moveToFirst is true, then set data to the EditTexts*/
+        if (cursor.moveToFirst())
         {
-            @Override
-            public void onClick(View v)
-            {
-                /* Check if the UserId field is blank. If it's blank set an error else get the row corresponding to that ID. */
-                if(validations.isBlank(userId))
-                {
-                    userId.setError("Please enter an ID");
-                    userId.requestFocus();
-                }
-                else
-                {
-                    /* Get data of the corresponding ID from the database . */
-                    myDB = new DatabaseHelper(ViewListContents.this);
-                    Cursor cursor = myDB.getContents(userId.getText().toString());
-                    Log.i(TAG, "CursorCount: "+cursor.getCount());
+            do{
+                String uName = cursor.getString(cursor.getColumnIndex("UNAME"));
+                String Email = cursor.getString(cursor.getColumnIndex("EMAIL"));
+                String Phone = cursor.getString(cursor.getColumnIndex("PHONE"));
+                userName.setText(uName);
+                userEmail.setText(Email);
+                userPhone.setText(Phone);
+                userName.requestFocus();
 
-                    /* If cursor count is 0, set an error. Else get the data and set it to the EditTexts. */
-                    if(cursor.getCount() == 0)
-                    {
-                        userId.setError("ID does not exist!");
-                        userId.requestFocus();
-                    }
-                    if (cursor.moveToFirst())
-                    {
-                        do{
-                            String uName = cursor.getString(cursor.getColumnIndex("UNAME"));
-                            String Email = cursor.getString(cursor.getColumnIndex("EMAIL"));
-                            String Phone = cursor.getString(cursor.getColumnIndex("PHONE"));
-                            userName.setText(uName);
-                            userEmail.setText(Email);
-                            userPhone.setText(Phone);
-                            userName.requestFocus();
-                            btnUpdate.setEnabled(true);
-
-                            Log.i(TAG, "ViewData UserName: "+uName+" Email: "+Email+" Phone: "+Phone);
-                        }
-                        while(cursor.moveToNext());
-                    }
-                    cursor.close();
-                }
+                Log.i(TAG, "ViewData UserName: "+uName+" Email: "+Email+" Phone: "+Phone);
             }
-        });
+            while(cursor.moveToNext());
+        }
+        cursor.close();
 
         /* Update button click event in the dialog. */
         btnUpdate.setOnClickListener(new View.OnClickListener()
@@ -191,16 +163,15 @@ public class ViewListContents extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                /* Check if the entered data is valid. If it's invalid set error. Else update the row corresponding to that ID. */
+                /* Check if the entered data is valid. If it's invalid display a toast. Else update the row corresponding to that ID. */
                 if(isValid())
                 {
                     myDB = new DatabaseHelper(ViewListContents.this);
-                    Cursor cursor = myDB.getContents(userId.getText().toString());
+                    Cursor cursor = myDB.getContents(position);
                     Log.i(TAG, "CursorCount: "+cursor.getCount());
                     if(cursor.getCount() == 0)
                     {
-                        userId.setError("ID does not exist!");
-                        userId.requestFocus();
+                        Toast.makeText(ViewListContents.this, "ID doesn't exist!", Toast.LENGTH_SHORT).show();
                     }
                     if (cursor.moveToFirst())
                     {
@@ -209,6 +180,7 @@ public class ViewListContents extends AppCompatActivity
                             String Email = cursor.getString(cursor.getColumnIndex("EMAIL"));
                             String Phone = cursor.getString(cursor.getColumnIndex("PHONE"));
 
+                            /* Check if the entered data exists in the database */
                             if (uName.equals(userName.getText().toString())&&Email.equals(userEmail.getText().toString())&&Phone.equals(userPhone.getText().toString()))
                             {
                                 userName.setError("Same data exists!");
@@ -217,21 +189,16 @@ public class ViewListContents extends AppCompatActivity
                             }
                             else
                             {
-                                int temp = userId.getText().toString().length();
+                                int temp = position.length();
                                 if(temp > 0)
                                 {
-                                    Boolean update = myDB.updateData(userId.getText().toString(), userName.getText().toString(), userEmail.getText().toString(), userPhone.getText().toString());
+                                    Boolean update = myDB.updateData(position, userName.getText().toString(), userEmail.getText().toString(), userPhone.getText().toString());
                                     if(update)
                                     {
                                         Toast.makeText(context, "Successfully updated the data!", Toast.LENGTH_SHORT).show();
                                         dialog.dismiss();
                                         finish();
                                         startActivity(getIntent());
-                                    }
-                                    else
-                                    {
-                                        userId.setError("The ID does not exist!");
-                                        userId.requestFocus();
                                     }
                                 }
                             }
@@ -243,23 +210,6 @@ public class ViewListContents extends AppCompatActivity
                 }
             }
         });
-    }
-
-    /** Method for deleteButton, the button in the OptionsMenu. */
-    private void delete()
-    {
-        validations = new Validations();
-
-        dialog = new Dialog(ViewListContents.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.delete_layout);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        dialog.setCancelable(true);
-
-        dialog.show();
-
-        Button btnDelete = dialog.findViewById(R.id.btnDelete);
-        delUserId = dialog.findViewById(R.id.delEtId);
 
         /* Delete button click event in the dialog */
         btnDelete.setOnClickListener(new View.OnClickListener()
@@ -267,31 +217,33 @@ public class ViewListContents extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                /* Check if the delUserId field is blank if it's blank then set an error else delete row of the corresponding ID. */
-                if(validations.isBlank(delUserId))
-                {
-                    delUserId.setError("Please enter an ID");
-                    delUserId.requestFocus();
-                }
-                else
-                {
-                    int temp = delUserId.getText().toString().length();
-                    if(temp > 0)
-                    {
-                        Integer deleteRow = myDB.deleteData(delUserId.getText().toString());
-                        if(deleteRow > 0)
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Alert!");
+                builder.setMessage("Are you sure you want to delete this record?");
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        int temp = position.length();
+                        if(temp > 0)
                         {
-                            Toast.makeText(context, "Successfully deleted the data!", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                            finish();
-                            startActivity(getIntent());
-                        }
-                        else
-                        {
-                            delUserId.setError("The ID does not exist!");
+                            Integer deleteRow = myDB.deleteData(position);
+                            if(deleteRow > 0)
+                            {
+                                Toast.makeText(context, "Successfully deleted the data!", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                                finish();
+                                startActivity(getIntent());
+                            }
                         }
                     }
-                }
+                });
+
+                builder.setNegativeButton("No", null);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
     }
@@ -299,13 +251,7 @@ public class ViewListContents extends AppCompatActivity
     /** Conditions for checking if the entered data is valid */
     public  boolean isValid()
     {
-        if (validations.isBlank(userId))
-        {
-            userId.setError("Please enter an ID");
-            userId.requestFocus();
-            return false;
-        }
-        else if (validations.isBlank(userName))
+        if (validations.isBlank(userName))
         {
             userName.setError("Please enter new UserName");
             userName.requestFocus();
@@ -341,6 +287,7 @@ public class ViewListContents extends AppCompatActivity
             userPhone.requestFocus();
             return false;
         }
+
         return true;
     }
 }
