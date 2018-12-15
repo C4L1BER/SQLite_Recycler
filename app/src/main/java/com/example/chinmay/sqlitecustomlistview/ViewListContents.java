@@ -181,7 +181,7 @@ public class ViewListContents extends AppCompatActivity
                             String Phone = cursor.getString(cursor.getColumnIndex("PHONE"));
 
                             /* Check if the entered data exists in the database */
-                            if (uName.equals(userName.getText().toString())&&Email.equals(userEmail.getText().toString())&&Phone.equals(userPhone.getText().toString()))
+                            if (uName.equals(userName.getText().toString().trim())&&Email.equals(userEmail.getText().toString().trim())&&Phone.equals(userPhone.getText().toString().trim()))
                             {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                 builder.setTitle("Alert!");
@@ -195,7 +195,7 @@ public class ViewListContents extends AppCompatActivity
                                 int temp = position.length();
                                 if(temp > 0)
                                 {
-                                    Boolean update = myDB.updateData(position, userName.getText().toString(), userEmail.getText().toString(), userPhone.getText().toString());
+                                    Boolean update = myDB.updateData(position, userName.getText().toString().trim(), userEmail.getText().toString().trim(), userPhone.getText().toString().trim());
                                     if(update)
                                     {
                                         Toast.makeText(context, "Successfully updated the data!", Toast.LENGTH_SHORT).show();

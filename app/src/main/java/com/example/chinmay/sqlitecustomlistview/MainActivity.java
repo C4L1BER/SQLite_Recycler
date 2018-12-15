@@ -73,9 +73,9 @@ public class MainActivity extends AppCompatActivity
                 /* Check if the entered data is valid, if yes then add it in the database and then clear the EditTexts.*/
                 if(isValid())
                 {
-                    String uName = etName.getText().toString();
-                    String eMail = etEmail.getText().toString();
-                    String phone = etPhone.getText().toString();
+                    String uName = etName.getText().toString().trim();
+                    String eMail = etEmail.getText().toString().trim();
+                    String phone = etPhone.getText().toString().trim();
 
                     if(uName.length() != 0 && eMail.length() != 0 && phone.length() != 0)
                     {
