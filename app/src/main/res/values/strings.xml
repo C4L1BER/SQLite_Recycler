@@ -20,4 +20,5 @@
     <string name="MainMenu">Main Menu</string>
     <string name="updateText">Update or Delete Data</string>
     <string name="viewData">View Data</string>
+    <string name="searchByUName">Search by UserName…</string>
 </resources>

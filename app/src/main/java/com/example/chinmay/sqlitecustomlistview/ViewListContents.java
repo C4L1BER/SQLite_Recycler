@@ -2,6 +2,7 @@ package com.example.chinmay.sqlitecustomlistview;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,7 +25,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class ViewListContents extends AppCompatActivity
+public class ViewListContents extends AppCompatActivity implements RecyclerViewAdapter.RecyclerViewAdapterListener
 {
     private static final String TAG = ViewListContents.class.getSimpleName();
 
@@ -39,6 +43,10 @@ public class ViewListContents extends AppCompatActivity
 
     Context context = ViewListContents.this;
 
+    RecyclerViewAdapter adapter;
+
+    SearchView searchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -55,13 +63,21 @@ public class ViewListContents extends AppCompatActivity
 
         validations = new Validations();
 
-        final Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         userList = new ArrayList<>();
+        getDataFromDB();
+        adapter = new RecyclerViewAdapter(this, userList, this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+    }
+
+    /** Get data from DataBase and add it to userList ArrayList to populate the RecyclerView */
+    public void getDataFromDB()
+    {
+        Log.i(TAG, "getDataFromDB: called");
         Cursor data = myDB.getListContents();
         int numRows = data.getCount();
 
-        /* If Database is empty go back to main activity else populate the RecyclerView. */
         if(numRows == 0)
         {
             Toast.makeText(this, "Database Empty!", Toast.LENGTH_SHORT).show();
@@ -80,31 +96,50 @@ public class ViewListContents extends AppCompatActivity
                 System.out.println(userList.get(i).getuName());
                 i++;
             }
-
-            RecyclerView recyclerView = findViewById(R.id.recyclerView);
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, userList);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-            recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener()
-            {
-                @Override
-                public void onClick(View view, int position)
-                {
-
-                }
-
-                @Override
-                public void onLongClick(View view, int position)
-                {
-                    String id = userList.get(position).getId();
-                    Log.i(TAG, "RecyclerLongClick: "+id);
-                    vibe.vibrate(25);
-                    update(id);
-                }
-
-            }));
         }
+    }
+
+    /** Create search icon in Options Menu */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s)
+            {
+                adapter.getFilter().filter(s);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s)
+            {
+                adapter.getFilter().filter(s);
+                return false;
+            }
+        });
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        if(id == R.id.action_search)
+        {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /** Method for BackButton */
@@ -114,7 +149,7 @@ public class ViewListContents extends AppCompatActivity
         return true;
     }
 
-    /** Method for updateButton, the button in the OptionsMenu. */
+    /** Method for data update when an item is clicked on. */
     private void update(final String position)
     {
         validations = new Validations();
@@ -292,5 +327,20 @@ public class ViewListContents extends AppCompatActivity
         }
 
         return true;
+    }
+
+    /** Passing the data to the adapter for filtering, and passing id of clicked item to "update" method for creating the dialog. */
+    @Override
+    public void onUserSelected(User user)
+    {
+        Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        vibe.vibrate(25);
+
+        String position = user.getId();
+
+        Log.i(TAG, "Selected ID: "+user.getId()+" UserName: "+user.getuName()+" Email: "+user.geteMail()+" Phone: "+user.getPhone());
+
+        update(position);
     }
 }
