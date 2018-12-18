@@ -76,7 +76,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return viewHolder;
     }
 
-    /** unBindViewHolder, data is bound to the view */
+    /** onBindViewHolder, data is bound to the view */
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder viewHolder, int i)
     {
